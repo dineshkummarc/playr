@@ -1,0 +1,14 @@
+body {
+  padding: 50px;
+  font: 14px "Ubuntu", "Helvetica Nueue", Arial, sans-serif;
+}
+#data {
+  padding: 5px 20px;
+}
+#title {
+  font-size: 20px;
+  font-weight: bold;
+}
+#artist {
+  font-size: 14px;
+}

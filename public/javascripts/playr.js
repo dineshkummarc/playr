@@ -1,12 +1,12 @@
 io.setPath('/javascripts/socket.io/')
 
-function Rhythmbox() {}
-Rhythmbox.create = function create(options) {
+function Playr() {}
+Playr.create = function create(options) {
   var self = new this()
   self.host = location.hostname == 'localhost' ? '127.0.0.1' : location.hostname
   return self
 }
-Rhythmbox.prototype.connect = function connect() {
+Playr.prototype.connect = function connect() {
   var first = true
     , self = this
 
@@ -47,7 +47,7 @@ Rhythmbox.prototype.connect = function connect() {
     $('#alert').show()
   })
 }
-Rhythmbox.prototype.send = function send(cmd) {
+Playr.prototype.send = function send(cmd) {
   this.socket.send(JSON.stringify({cmd: cmd}))
 }
 

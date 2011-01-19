@@ -1,5 +1,5 @@
 (function($) {
-  var playr = Rhythmbox.create()
+  var playr = Playr.create()
   playr.connect()
 
   $(function(){

@@ -5,6 +5,7 @@
 
 var express = require('express')
   , sys = require('sys')
+  , urls = require('url')
   , rhythmbox = require(__dirname + '/lib/rhythmbox').createClient()
   , app = module.exports = express.createServer();
 
@@ -27,7 +28,7 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-rhythmbox.scan()
+//rhythmbox.scan()
 
 // Routes
 
@@ -45,35 +46,37 @@ app.get('/prev', control)
 app.get('/info', control)
 
 function control(req, res) {
-    res.header('Content-Type', 'text/javascript');
+  res.header('Content-Type', 'text/javascript');
 
-    function onChange(err, data) {
-        // error of some sort
-        if (err) res.send('0')
-        else {
-            // info actually requires us returning something useful
-            if (req.url.match(/^\/info/)) {
-                res.send(req.query.callback+"(" + JSON.stringify(data) + ")");
-            } else {
-                res.send(req.query.callback+"()");
-            }
-        }
+  function onChange(err, data) {
+    // error of some sort
+    if (err) res.send('0')
+    else {
+      // info actually requires us returning something useful
+      if (req.url.match(/^\/info/)) {
+        res.send(req.query.callback+"(" + JSON.stringify(data) + ")");
+      } else {
+        res.send(req.query.callback+"()");
+      }
     }
+  }
+  var url = urls.parse(req.url)
+    , params = url.pathname.match(/^\/(.*)/)
 
-    switch (req.params[0]){
-        case "play-pause":
-            rhythmbox.toggle(onChange)
-            break;
-        case "next":
-            rhythmbox.next(onChange)
-            break;
-        case "prev":
-            rhythmbox.prev(onChange)
-            break;
-        default:
-            rhythmbox.current(onChange)
-            break;
-    }
+  switch (params[1]) {
+    case "play-pause":
+      rhythmbox.toggle(onChange)
+      break;
+    case "next":
+      rhythmbox.next(onChange)
+      break;
+    case "prev":
+      rhythmbox.prev(onChange)
+      break;
+    default:
+      rhythmbox.current(onChange)
+      break;
+  }
 }
 
 // Only listen on $ node app.js

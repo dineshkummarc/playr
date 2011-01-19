@@ -11,7 +11,15 @@
       e.preventDefault()
       playr.send('play-pause')
     })
-   $("#next").live('click', function(e){
+    $(document).keydown(function(e) {
+      if (e.keyCode == '32') playr.send('play-pause')
+      if (e.keyCode == '37') playr.send('prev')
+      if (e.keyCode == '39') playr.send('next')
+      if (e.keyCode == '43') playr.send('volUp')
+      if (e.keyCode == '45') playr.send('volDown')
+      if (e.keyCode == '77') playr.send('mute')
+    })
+    $("#next").live('click', function(e){
       e.preventDefault()
       playr.send('next')
     })

@@ -70,6 +70,9 @@ socket.on('connection', function(client) {
         case "volDown":
           rhythmbox.volDown()
           break
+        case "mute":
+          rhythmbox.mute()
+          break
         case "playlist":
           rhythmbox.current(function(err, data) {
             if (err) return sys.puts(sys.inspect(err))

@@ -1,10 +1,16 @@
 h1 Rhythmbox Playr
 img#loader(src='/images/ajax-loader.gif')
+#alert(style='display:none; color: red') Your connection has been disconnected.&nbsp;
+  a(href='#') Try to reconnect
 #player(style='display:none')
   a#play.button.green.glass.round(href='#', data-icon="➲") Play
   a#pause.button.glass(href='#', data-icon="||") Pause
   a#prev.blue.button.glass.brackets(href='#', data-icon="< ") Prev
   a#next.blue.button.glass.brackets(href='#', data-icon="> ") Next
+
+  a#volUp.red.button.glass.round(href='#', data-icon="+ ")
+  a#volDown.red.button.glass.round(href='#', data-icon="- ")
+
   div#data
     span#title
     span#artist

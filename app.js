@@ -64,6 +64,12 @@ socket.on('connection', function(client) {
         case "prev":
           rhythmbox.prev()
           break
+        case "volUp":
+          rhythmbox.volUp()
+          break
+        case "volDown":
+          rhythmbox.volDown()
+          break
         case "playlist":
           rhythmbox.current(function(err, data) {
             if (err) return sys.puts(sys.inspect(err))

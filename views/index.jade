@@ -1,9 +1,14 @@
+h1 Rhythmbox Playr
 img#loader(src='/images/ajax-loader.gif')
-a#play.button.green.glass.round(href='#', data-icon="➲", style='display:none') Play
-a#pause.button.glass(href='#', data-icon="||", style='display:none') Pause
-a#prev.blue.button.glass.brackets(href='#', data-icon="< ", style='display:none') Prev
-a#next.blue.button.glass.brackets(href='#', data-icon="> ", style='display:none') Next
-div#data(style='display:none')
-  span#title
-  span#artist
+#player(style='display:none')
+  a#play.button.green.glass.round(href='#', data-icon="➲") Play
+  a#pause.button.glass(href='#', data-icon="||") Pause
+  a#prev.blue.button.glass.brackets(href='#', data-icon="< ") Prev
+  a#next.blue.button.glass.brackets(href='#', data-icon="> ") Next
+  div#data
+    span#title
+    span#artist
+
+footer powered by&nbsp;
+  a(href="http://nodejs.org/") nodejs
 

@@ -6,27 +6,28 @@
 var express = require('express')
   , sys = require('sys')
   , urls = require('url')
+  , io = require('socket.io')
   , rhythmbox = require(__dirname + '/lib/rhythmbox').createClient()
-  , app = module.exports = express.createServer();
+  , app = module.exports = express.createServer()
 
 // Configuration
 
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.use(express.bodyDecoder());
-  app.use(express.methodOverride());
-  app.use(express.compiler({ src: __dirname + '/public', enable: ['less'] }));
-  app.use(app.router);
-  app.use(express.staticProvider(__dirname + '/public'));
-});
+app.configure(function() {
+  app.set('views', __dirname + '/views')
+  app.use(express.bodyDecoder())
+  app.use(express.methodOverride())
+  app.use(express.compiler({ src: __dirname + '/public', enable: ['less'] }))
+  app.use(app.router)
+  app.use(express.staticProvider(__dirname + '/public'))
+})
 
 app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
+})
 
 app.configure('production', function(){
-  app.use(express.errorHandler());
-});
+  app.use(express.errorHandler())
+})
 
 //rhythmbox.scan()
 
@@ -40,49 +41,44 @@ app.get('/', function(req, res) {
   })
 })
 
-app.get('/play-pause', control)
-app.get('/next', control)
-app.get('/prev', control)
-app.get('/info', control)
+// Websocket Server
+var socket = io.listen(app)
 
-function control(req, res) {
-  res.header('Content-Type', 'text/javascript');
+rhythmbox.on('change', function(data) {
+  socket.broadcast(JSON.stringify({type:'playlist', data: data}))
+})
 
-  function onChange(err, data) {
-    // error of some sort
-    if (err) res.send('0')
-    else {
-      // info actually requires us returning something useful
-      if (req.url.match(/^\/info/)) {
-        res.send(req.query.callback+"(" + JSON.stringify(data) + ")");
-      } else {
-        res.send(req.query.callback+"()");
+socket.on('connection', function(client) {
+  client.broadcast(JSON.stringify({content: 'New User!'}))
+
+  client.on('message', function(data) {
+    data = JSON.parse(data)
+    if (typeof data.cmd !== 'undefined') {
+      switch (data.cmd) {
+        case "play-pause":
+          rhythmbox.toggle()
+          break
+        case "next":
+          rhythmbox.next()
+          break
+        case "prev":
+          rhythmbox.prev()
+          break
+        case "playlist":
+          rhythmbox.current(function(err, data) {
+            if (err) return sys.puts(sys.inspect(err))
+            client.send(JSON.stringify({type:'playlist', data: data}))
+          })
+          break
       }
     }
-  }
-  var url = urls.parse(req.url)
-    , params = url.pathname.match(/^\/(.*)/)
-
-  switch (params[1]) {
-    case "play-pause":
-      rhythmbox.toggle(onChange)
-      break;
-    case "next":
-      rhythmbox.next(onChange)
-      break;
-    case "prev":
-      rhythmbox.prev(onChange)
-      break;
-    default:
-      rhythmbox.current(onChange)
-      break;
-  }
-}
+  })
+})
 
 // Only listen on $ node app.js
 
 if (!module.parent) {
-  app.listen(3000);
+  app.listen(3000)
   console.log("Express server listening on port %d", app.address().port)
 }
 
